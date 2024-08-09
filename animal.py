@@ -1,0 +1,68 @@
+import streamlit as st
+from PIL import Image
+import numpy as np
+import tensorflow as tf
+import matplotlib.pyplot as plt
+
+# Load a pre-trained model (e.g., MobileNetV2)
+model = tf.keras.applications.MobileNetV2(weights='imagenet')
+
+def preprocess_image(image):
+    image = image.resize((224, 224))  # Resize image to match model input
+    image_array = np.array(image)
+    image_array = tf.keras.applications.mobilenet_v2.preprocess_input(image_array)
+    image_array = np.expand_dims(image_array, axis=0)
+    return image_array
+
+def identify_animal(image):
+    processed_image = preprocess_image(image)
+    predictions = model.predict(processed_image)
+    decoded_predictions = tf.keras.applications.mobilenet_v2.decode_predictions(predictions, top=1)[0]
+    animal_name = decoded_predictions[0][1]  # Get the name of the animal
+    return animal_name
+
+def generate_chart():
+    # Generate some dummy data for visualization
+    categories = ['Lion', 'Tiger', 'Elephant', 'Giraffe']
+    values = np.random.randint(1, 100, size=len(categories))
+    
+    # Create a bar chart
+    fig, ax = plt.subplots()
+    ax.bar(categories, values)
+    ax.set_xlabel('Animal')
+    ax.set_ylabel('Count')
+    ax.set_title('Animal Count Visualization')
+    
+    return fig
+
+def main():
+    st.title("Animal Identification App")
+
+    # Sidebar
+    st.sidebar.header("Options")
+    option = st.sidebar.selectbox("Choose an option", ["Upload Image", "View Data Visualization"])
+
+    if option == "Upload Image":
+        st.header("Upload an Image")
+
+        # Image upload widget
+        uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
+
+        if uploaded_file is not None:
+            # Display uploaded image
+            image = Image.open(uploaded_file)
+            st.image(image, caption='Uploaded Image', use_column_width=True)
+            
+            # Display progress and status
+            with st.spinner("Identifying the animal..."):
+                animal_name = identify_animal(image)
+                st.write(f"Identified Animal: {animal_name}")
+                
+    elif option == "View Data Visualization":
+        st.header("Data Visualization")
+        # Display the chart
+        fig = generate_chart()
+        st.pyplot(fig)
+
+if __name__ == "__main__":
+    main()
