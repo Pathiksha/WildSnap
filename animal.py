@@ -49,14 +49,17 @@ def main():
         uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
 
         if uploaded_file is not None:
-            # Display uploaded image
-            image = Image.open(uploaded_file)
-            st.image(image, caption='Uploaded Image', use_column_width=True)
-            
-            # Display progress and status
-            with st.spinner("Identifying the animal..."):
-                animal_name = identify_animal(image)
-                st.write(f"Identified Animal: {animal_name}")
+            try:
+                # Display uploaded image
+                image = Image.open(uploaded_file)
+                st.image(image, caption='Uploaded Image', use_column_width=True)
+                
+                # Display progress and status
+                with st.spinner("Identifying the animal..."):
+                    animal_name = identify_animal(image)
+                    st.write(f"Identified Animal: {animal_name}")
+            except Exception as e:
+                st.error(f"Error processing image: {e}")
                 
     elif option == "View Data Visualization":
         st.header("Data Visualization")
