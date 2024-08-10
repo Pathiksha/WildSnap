@@ -36,7 +36,7 @@ def generate_chart():
     return fig
 
 def main():
-    st.title("Animal Identification App")
+    st.title("Animal/Bird Identification App")
 
     # Sidebar
     st.sidebar.header("Options")
@@ -57,7 +57,7 @@ def main():
                 # Display progress and status
                 with st.spinner("Identifying the animal..."):
                     animal_name = identify_animal(image)
-                    st.write(f"Identified Animal: {animal_name}")
+                    st.write(f"Identified Animal/bird: {animal_name}")
             except Exception as e:
                 st.error(f"Error processing image: {e}")
                 
