@@ -17,21 +17,19 @@ def preprocess_image(image):
 def identify_animal(image):
     processed_image = preprocess_image(image)
     predictions = model.predict(processed_image)
-    decoded_predictions = tf.keras.applications.mobilenet_v2.decode_predictions(predictions, top=1)[0]
-    animal_name = decoded_predictions[0][1]  # Get the name of the animal
-    return animal_name
+    decoded_predictions = tf.keras.applications.mobilenet_v2.decode_predictions(predictions, top=5)[0]
+    return decoded_predictions
 
-def generate_chart():
-    # Generate some dummy data for visualization
-    categories = ['Lion', 'Tiger', 'Elephant', 'Giraffe']
-    values = np.random.randint(1, 100, size=len(categories))
+def generate_chart(predictions):
+    # Extract top categories and their probabilities
+    categories = [pred[1] for pred in predictions]
+    probabilities = [pred[2] for pred in predictions]
     
     # Create a bar chart
     fig, ax = plt.subplots()
-    ax.bar(categories, values)
-    ax.set_xlabel('Animal')
-    ax.set_ylabel('Count')
-    ax.set_title('Animal Count Visualization')
+    ax.barh(categories, probabilities, color='skyblue')
+    ax.set_xlabel('Probability')
+    ax.set_title('Top Predicted Animals/Birds')
     
     return fig
 
@@ -56,16 +54,22 @@ def main():
                 
                 # Display progress and status
                 with st.spinner("Identifying the animal..."):
-                    animal_name = identify_animal(image)
-                    st.write(f"Identified Animal/bird: {animal_name}")
+                    predictions = identify_animal(image)
+                    animal_name = predictions[0][1]  # Get the name of the top prediction
+                    st.write(f"Identified Animal/Bird: {animal_name}")
+                    
+                    # Display the chart with top predictions
+                    fig = generate_chart(predictions)
+                    st.pyplot(fig)
+                    
             except Exception as e:
                 st.error(f"Error processing image: {e}")
                 
     elif option == "View Data Visualization":
         st.header("Data Visualization")
-        # Display the chart
-        fig = generate_chart()
-        st.pyplot(fig)
+        # Since no specific data is available in this option, you might want to show static or dummy data
+        st.write("Upload an image to view data visualization related to the predictions.")
 
 if __name__ == "__main__":
     main()
+
