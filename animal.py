@@ -3,6 +3,7 @@ from PIL import Image
 import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 
 # Load a pre-trained model (e.g., MobileNetV2)
 model = tf.keras.applications.MobileNetV2(weights='imagenet')
@@ -25,9 +26,13 @@ def generate_chart(predictions):
     categories = [pred[1] for pred in predictions]
     probabilities = [pred[2] for pred in predictions]
     
+    # Generate a list of colors
+    num_colors = len(categories)
+    colors = plt.cm.get_cmap('tab10', num_colors).colors  # Use the 'tab10' colormap
+
     # Create a bar chart
     fig, ax = plt.subplots()
-    ax.barh(categories, probabilities, color='skyblue')
+    ax.barh(categories, probabilities, color=colors)
     ax.set_xlabel('Probability')
     ax.set_title('Top Predicted Animals/Birds')
     
@@ -57,17 +62,28 @@ def main():
                     predictions = identify_animal(image)
                     animal_name = predictions[0][1]  # Get the name of the top prediction
                     st.write(f"Identified Animal/Bird: {animal_name}")
-                    
-                    # Display the chart with top predictions
-                    fig = generate_chart(predictions)
-                    st.pyplot(fig)
+
+                    # Store predictions in session state
+                    st.session_state['predictions'] = predictions
                     
             except Exception as e:
                 st.error(f"Error processing image: {e}")
                 
     elif option == "View Data Visualization":
         st.header("Data Visualization")
-        # Since no specific data is available in this option, you might want to show static or dummy data
+
+        # Check if predictions are available in session state
+        if 'predictions' in st.session_state:
+            predictions = st.session_state['predictions']
+            # Display the chart with top predictions
+            fig = generate_chart(predictions)
+            st.pyplot(fig)
+        else:
+            st.write("Upload an image first to view data visualization.")
+
+if __name__ == "__main__":
+    main()
+
         st.write("Upload an image to view data visualization related to the predictions.")
 
 if __name__ == "__main__":
