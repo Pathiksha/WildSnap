@@ -14,8 +14,8 @@ Simple and intuitive design that lets you focus on the fun of discovering wildli
 * Progress and Status Updates: 
   Keep track of your identification history and learn more about different species.
 
-###How It Works
-*Upload or Capture->Use the app to upload a photo from your device or capture a new one.
-*Processing->The image is processed using a pre-trained machine learning model.
-*Identification->The app identifies the animal and provides relevant details.
-*Explore->Browse through identification results and learn more about the animal species.
+### How It Works
+* Upload or Capture->Use the app to upload a photo from your device or capture a new one.
+* Processing->The image is processed using a pre-trained machine learning model.
+* Identification->The app identifies the animal and provides relevant details.
+* Explore->Browse through identification results and learn more about the animal species.
