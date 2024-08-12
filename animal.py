@@ -67,7 +67,7 @@ def main():
                 
     elif option == "View Data Visualization":
         st.header("Data Visualization")
-        # Since no specific data is available in this option, you might want to show static or dummy data
+    
         st.write("Upload an image to view data visualization related to the predictions.")
 
 if __name__ == "__main__":
